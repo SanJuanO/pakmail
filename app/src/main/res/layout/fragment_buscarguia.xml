@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#00FFFFFF"
+    >
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="vertical"
+            tools:context="com.demotxt.droidsrce.profileui.MainActivity">
+
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:id="@+id/info"
+                    android:layout_marginTop="200dp"
+                    android:layout_below="@id/Titulodetalle"
+                    android:weightSum="4"
+                    >
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:fontFamily="sans-serif"
+                        android:text="Escribe la guía"
+                        android:layout_margin="20dp"
+                        android:textSize="38sp"
+
+android:textColor="@color/ared"
+ />
+
+
+
+                    <EditText
+                        android:id="@+id/textoguia"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/black"
+                        android:layout_marginStart="10dp"
+                        android:inputType="number"
+                        android:text=""
+                        android:layout_marginEnd="10dp"
+                        android:textSize="18dp" />
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="2dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:background="@color/ared" />
+                </LinearLayout>
+
+
+
+                <Button
+
+                    android:id="@+id/buscarguia"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginEnd="30dp"
+                    android:text="Buscar"
+                    style="@style/btnred"
+                    android:textSize="18sp"
+                    app:backgroundTint="@color/ared"
+                    />
+            </LinearLayout>
+
+    </ScrollView>
+
+</FrameLayout>
