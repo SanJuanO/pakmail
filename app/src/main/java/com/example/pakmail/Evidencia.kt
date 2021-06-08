@@ -80,8 +80,15 @@ nombret.setText(nombre)
 
     fun cambiarestatus(){
 
+        val preferencias = this.getSharedPreferences(
+                "variables",
+                Context.MODE_PRIVATE
+        )
+        var id=preferencias.getString("id", "").toString()
+
 
         val progressDialog = ProgressDialog(this,
+
 
 
             R.style.Theme_AppCompat_Light_Dialog)
@@ -96,6 +103,7 @@ nombret.setText(nombre)
         dat.put("accion", "updateEstado")
         dat.put("id", id_ticket)
         dat.put("id_estado", id_estado)
+        dat.put("id_user", id)
 
 
         val request = JsonCustomRequestPHP(
