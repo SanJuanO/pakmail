@@ -38,7 +38,7 @@ class Buscarguia : Fragment() {
 
     fun buscarguia(){
         var guia= textoguia.text.toString()
-if(guia != ""  && guia.count()!=10) {
+if(guia != ""  && guia.count()==10) {
     val intent = Intent(activity, Detalle::class.java)
     // start your next activity
     val preferencias = requireActivity().getSharedPreferences("variables", Context.MODE_PRIVATE)

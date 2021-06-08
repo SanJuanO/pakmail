@@ -53,7 +53,7 @@ cerrarcesion.setOnClickListener(){
     val preferencias = this.requireActivity().getSharedPreferences("variables", Context.MODE_PRIVATE)
 
     val editor = preferencias.edit()
-    editor.putString("login", "sesioncerrada")
+    editor.putString("sesion", "no")
     editor.commit()
     val intent = Intent(activity, Login::class.java)
 
