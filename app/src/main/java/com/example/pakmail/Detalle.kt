@@ -9,14 +9,16 @@ import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
-import com.android.volley.DefaultRetryPolicy
-import com.android.volley.Request
-import com.android.volley.RequestQueue
-import com.android.volley.Response
+import com.android.volley.*
 import com.android.volley.toolbox.Volley
+import com.example.pakmail.services.Utils
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.ObjectMapper
 import kotlinx.android.synthetic.main.activity_detalle.*
-import kotlinx.android.synthetic.main.activity_login.*
-import java.util.*
+import org.json.JSONArray
+import org.json.JSONException
+import org.json.JSONObject
+
 
 class Detalle : AppCompatActivity() {
     var id=""
@@ -28,6 +30,7 @@ class Detalle : AppCompatActivity() {
     var id_ticket = ""
     var nom = ""
     var tel = ""
+    var utils: Utils = Utils()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,10 +39,124 @@ class Detalle : AppCompatActivity() {
 
          guia = intent.getStringExtra("folio")
         escaneo= intent.getStringExtra("escaneo")
-
-
         detalle()
         Titulodetalle.setText("Guia: " + guia)
+    }
+
+    fun detalle() {
+        val progressDialog = ProgressDialog(this,
+
+
+            R.style.Theme_AppCompat_Light_Dialog)
+        progressDialog.isIndeterminate = true
+        progressDialog.setMessage("Cargando datos...")
+        progressDialog.show()
+
+        val json = JSONObject()
+        try {
+            json.put("accion", "listar")
+            json.put("folio", guia)
+            utils.WsRequest(
+                this,
+                Request.Method.POST,
+                Endpoint.URL_GUIA,
+                json,
+                null,
+                null,
+                object : Utils.ServerVolleyCallback {
+                    override fun onSucces(result: String?) {
+                        progressDialog?.dismiss()
+                        val objectMapper = ObjectMapper()
+                        val preferences = getSharedPreferences("variables", Context.MODE_PRIVATE)
+                        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                        val editor = preferences.edit()
+
+
+                        val array = JSONArray(result)
+                        if (array.length() > 0) {
+                            val guias = array.getJSONObject(0)
+                        val tfecha_recoleccion = guias.getString("fecha_recoleccion")
+                            val tid_estado =""// guias.getString("id_estado")
+                            val ttipo_paquete = guias.getString("tipo")
+                            val tdescripcion_paquete = guias.getString("descripcion")
+                         //   val tnombre_alterno_recibe = guias.getString("nombre_alterno_recibe")
+                            // val ttelefono_alterno_recibe = guias.getString("telefono_alterno_recibe")
+                            val trecolectar = guias.getString("recoleccion")
+                          //  val tdireccionrecolecion = guias.getString("direccionrecolecion")
+                           // val tpersonarecolecion = guias.getString("personarecolecion")
+                            val thora_recoleccion = guias.getString("fecha_recoleccion")
+                            val tnombrer = guias.getString("destinatario")
+                            val ttelefonor = guias.getString("destinatario_telefono")
+                            val tdireccionr = guias.getString("destinatario_direccion")
+
+                            val ttelefonod = guias.getString("remitente_telefono")
+
+                            val tnombred = guias.getString("remitente")
+                            val tdirecciond = guias.getString("remitente_direccion")
+                            val ttipo_rda = guias.getString("tipo_entrega")
+                            val testatus = guias.getString("estatus")
+
+                          //  val tcomentarios = persona_entrega_data.getString("comentarios")
+                        /*    val dimensiones = guias.getJSONArray("misma_dimension")
+                            id_estado = tid_estado
+                            var tpeso = 0
+                            var tpiezas = dimensiones.length()
+
+                            val arr = IntArray(dimensiones.length())
+
+
+                            for (i in 0 until dimensiones.length()) {
+                                val producto = dimensiones.getJSONObject(i)
+
+                                tpeso = tpeso + producto.getString("dp").toInt()
+
+
+                            }*/
+                            nombrer.text = tnombrer
+                            telefonor.text = ttelefonor
+                            direccionr.text = tdireccionr
+
+                            nombred.text = tnombred
+                            telefonod.text = ttelefonod
+                            direcciond.text = tdirecciond
+
+                            tipo.text = ttipo_paquete
+                         //   peso.text = tpeso.toString()
+                          //  piezas.text = tpiezas.toString()
+                            descripcion.text = tdescripcion_paquete.toString()
+                          //  nombrealterno.text = tnombre_alterno_recibe
+                           // telefonoalterno.text = ttelefono_alterno_recibe
+
+                           // recolecciondireccion.text = tdireccionrecolecion
+                            fecha_recoleccion.text = tfecha_recoleccion + " " + thora_recoleccion
+                            //persona_recoleccion.text = tpersonarecolecion
+                            nom = tnombred
+
+                            tel = ttelefonod
+                            if (trecolectar != "1") {
+
+                                l12.setVisibility(LinearLayout.GONE);
+                            }
+
+                            if (id_estado == "1") {
+                                sproveedor.setEnabled(false)
+                                button4.setEnabled(false)
+                            }
+                        //    estatusenvio()
+                        } else {
+
+                        }
+                    }
+
+                    override fun Error(error: VolleyError?) {
+                        progressDialog?.dismiss()
+
+                    }
+                })
+        } catch (e: JSONException) {
+            progressDialog?.dismiss()
+            e.printStackTrace()
+        }
     }
 
 
@@ -80,8 +197,6 @@ class Detalle : AppCompatActivity() {
       dat.put("id", id_ticket)
       dat.put("id_estado", id_estado)
       dat.put("id_user", id)
-
-
       val request = JsonCustomRequestPHP(
           Request.Method.POST,
           URL_API,
@@ -98,8 +213,6 @@ class Detalle : AppCompatActivity() {
                   _ShowAlert("Error", "intente mas tarde")
 
               }
-
-
           },
           Response.ErrorListener { error ->
               _ShowAlert("Error", "intente mas tarde")
@@ -117,11 +230,7 @@ class Detalle : AppCompatActivity() {
   }
     }
 
-
-
-
-
-    fun detalle() {
+    fun detalle2() {
 
         val progressDialog = ProgressDialog(
             this,

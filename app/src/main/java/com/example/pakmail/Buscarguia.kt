@@ -1,6 +1,7 @@
 package com.example.pakmail
 
 import android.app.AlertDialog
+import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -10,12 +11,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
+import com.android.volley.Request
+import com.android.volley.VolleyError
 import com.example.pakmail.R.layout.fragment_buscarguia
+import com.example.pakmail.services.Utils
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.google.gson.JsonObject
+import com.google.gson.JsonParser
+import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.fragment_buscarguia.*
 import kotlinx.android.synthetic.main.fragment_perfil.*
+import org.json.JSONException
+import org.json.JSONObject
 
 
 class Buscarguia : Fragment() {
+    var utils: Utils = Utils()
+
     companion object {
         fun newInstance(): Buscarguia = Buscarguia()
     }
@@ -31,10 +44,6 @@ class Buscarguia : Fragment() {
         }
 
     }
-
-
-
-
 
     fun buscarguia(){
         var guia= textoguia.text.toString()

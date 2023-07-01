@@ -27,7 +27,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:id="@+id/info"
-                    android:layout_marginTop="200dp"
+                    android:layout_marginTop="40dp"
                     android:layout_below="@id/Titulodetalle"
                     android:weightSum="4"
                     >
@@ -51,7 +51,8 @@ android:textColor="@color/ared"
                         android:textColor="@color/black"
                         android:layout_marginStart="10dp"
                         android:inputType="number"
-                        android:text=""
+                        android:layout_marginTop="100dp"
+                        android:text="5791983237"
                         android:layout_marginEnd="10dp"
                         android:textSize="18dp" />
                     <View
@@ -71,12 +72,13 @@ android:textColor="@color/ared"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="30dp"
-                    android:layout_marginTop="30dp"
+                    android:layout_marginTop="40dp"
                     android:layout_marginEnd="30dp"
                     android:text="Buscar"
                     style="@style/btnred"
                     android:textSize="18sp"
                     app:backgroundTint="@color/ared"
+
                     />
             </LinearLayout>
 

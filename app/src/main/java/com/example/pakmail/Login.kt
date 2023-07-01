@@ -6,22 +6,20 @@ import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import com.android.volley.DefaultRetryPolicy
-import com.android.volley.Request
-import com.android.volley.RequestQueue
-import com.android.volley.Response
-import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.*
 import com.android.volley.toolbox.Volley
 import com.example.pakmail.permission.PermissionsActivity
 import com.example.pakmail.permission.PermissionsChecker
+import com.example.pakmail.services.Utils
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.google.gson.JsonObject
+import com.google.gson.JsonParser
 import kotlinx.android.synthetic.main.activity_login.*
 import org.json.JSONException
 import org.json.JSONObject
@@ -32,6 +30,8 @@ class Login : AppCompatActivity() {
     var linea = ArrayList<String>()
     var REQUEST_LOCATION = 1
     var lineapk = ArrayList<String>()
+    var utils: Utils = Utils()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
@@ -56,9 +56,9 @@ class Login : AppCompatActivity() {
 
 
             buttoningresar.isEnabled = false
-            _cellText.setText(preferences.getString("usuario", ""))
-            _passwordText.setText(preferences.getString("password", ""))
-            login2()
+         //   _cellText.setText(preferences.getString("email", ""))
+          //  _passwordText.setText(preferences.getString("password", ""))
+           // login2()
 
         }
 
@@ -90,10 +90,9 @@ class Login : AppCompatActivity() {
         alertDialog.setTitle(title)
         alertDialog.setMessage(mensaje)
         alertDialog.setButton(
-            AlertDialog.BUTTON_NEUTRAL, "OK"
+            AlertDialog.BUTTON_NEUTRAL, "Aceptar"
         ) { dialog, which ->
             dialog.dismiss()
-            finish()
         }
         alertDialog.show()
     }
@@ -111,6 +110,8 @@ class Login : AppCompatActivity() {
             }
         }
     }
+
+
     fun login2() {
         val progressDialog = ProgressDialog(this,
 
@@ -120,83 +121,75 @@ class Login : AppCompatActivity() {
         progressDialog.setMessage("Cargando datos...")
         progressDialog.show()
 
+        val json = JSONObject()
+        try {
+            json.put("accion", "login")
+            json.put("correo", _cellText.text.toString())
+            json.put("password", _passwordText.text.toString())
+            utils.WsRequest(
+                applicationContext,
+                Request.Method.POST,
+                Endpoint.URL_MENSAJERO,
+                json,
+                null,
+                null,
+                object : Utils.ServerVolleyCallback {
+                    override fun onSucces(result: String?) {
+                        progressDialog?.dismiss()
+                        val objectMapper = ObjectMapper()
+                        val preferences = getSharedPreferences("variables", Context.MODE_PRIVATE)
+                        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                        val editor = preferences.edit()
 
-       var  URL_API = "https://servicios.pakmailmetepec.com/mensajeros.php"
-        val requestQueue: RequestQueue = Volley.newRequestQueue(this)
-        val dat = HashMap<String, String>()
-        dat.put("accion", "login")
-        dat.put("usuario", _cellText.text.toString())
-        dat.put("password", _passwordText.text.toString())
+                        val resp: JsonObject = JsonParser().parse(result).asJsonObject
+                        val datos = resp["datos"]
+                        val success = (resp as JsonObject).get("success").toString()
+                        if (success == "true") {
+                            editor.putString("id", (datos as JsonObject).get("id").toString())
+                            editor.putString(
+                                "nombre",
+                                (datos as JsonObject).get("nombre").toString()
+                            )
+                            editor.putString(
+                                "telefono",
+                                (datos as JsonObject).get("telefono").toString()
+                            )
+                            editor.putString(
+                                "email",
+                                (datos as JsonObject).get("correo").toString()
+                            )
+                            editor.putString(
+                                "password",
+                                (datos as JsonObject).get("password").toString()
+                            )
+                            if (checkBox.isChecked) {
+                                editor.putString("sesion", "si")
+                            }
 
 
-        val request = JsonCustomRequestPHP(
-            Request.Method.POST,
-            URL_API,
-            dat,
-            Response.Listener { response ->
 
+                            editor.commit()
+                            val intent = Intent(
+                                this@Login,
+                                MainActivity::class.java
+                            )
+                            startActivity(intent)
+                            finish()
+                        } else {
+                            _ShowAlert("Error", (resp as JsonObject).get("message").toString())
+                        }
 
-                progressDialog?.dismiss()
-                val result = response["resultado"] as Int
-                if (result == 1) {
-                    val preferencias = this.getSharedPreferences("variables", Context.MODE_PRIVATE)
-
-                    val editor = preferencias.edit()
-
-                    val guias = response.getJSONObject("datos")
-                    val id = guias.getString("id")
-                    val usuario = guias.getString("usuario")
-                    val password = _passwordText.text.toString()
-                    val nombre = guias.getString("nombre")
-                    val email = guias.getString("email")
-                    val telefono = guias.getString("telefono")
-                    val activo = guias.getString("activo")
-                    val token = guias.getString("token")
-                    val borrado = guias.getString("borrado")
-
-
-                    editor.putString("id", id)
-                    editor.putString("usuario", usuario)
-                    editor.putString("nombre", nombre)
-                    editor.putString("telefono", telefono)
-                    editor.putString("email", email)
-                    editor.putString("password", password)
-                    if (activo == "1" && borrado == "0") {
-
-
-                    if (checkBox.isChecked) {
-                        editor.putString("sesion", "si")
                     }
 
+                    override fun Error(error: VolleyError?) {
+                        progressDialog?.dismiss()
 
-
-                    editor.commit()
-                    val sendMailIntent = Intent(this, MainActivity::class.java)
-                    startActivity(sendMailIntent)
-                    finish()
-                } else {
-
-                    val error = response.getString("mensaje")
-                    _ShowAlert("Error", error)
-                }
-            }
-            else {
-                    _ShowAlert("Error", "intente mas tarde")
-                }
-
-            },
-            Response.ErrorListener { error ->
-                _ShowAlert("Error", "intente mas tarde")
-
-            })
-        val MY_SOCKET_TIMEOUT_MS = 15000
-        val maxRetries = 2
-        request.retryPolicy = DefaultRetryPolicy(
-            MY_SOCKET_TIMEOUT_MS,
-            maxRetries,
-            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
-        )
-        requestQueue.add(request)
+                    }
+                })
+        } catch (e: JSONException) {
+            progressDialog?.dismiss()
+            e.printStackTrace()
+        }
     }
 
 }
