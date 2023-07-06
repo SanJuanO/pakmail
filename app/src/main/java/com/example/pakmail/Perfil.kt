@@ -25,15 +25,13 @@ class Perfil : Fragment() {
         super.onActivityCreated(state)
         val preferencias = this.requireActivity().getSharedPreferences("variables", Context.MODE_PRIVATE)
 
-        var role=preferencias.getString("role", "").toString()
+        var role= "Mensajero"
 
         var nombre = preferencias.getString("nombre", "").toString()
 
         var  telefono= preferencias.getString("telefono", "").toString()
         var email= preferencias.getString("email", "").toString()
 
-
-        var usuario = preferencias.getString("usuario", "").toString()
 
         //val decodedString1 = Base64.decode(imag, Base64.DEFAULT)
         //val decodedByte = BitmapFactory.decodeByteArray(decodedString1, 0, decodedString1.size)
@@ -43,7 +41,6 @@ class Perfil : Fragment() {
       nombretext.text=nombre
         telefonotext.text=telefono
         emailtext.text=email
-        usuariotext.text=usuario
 
 
 //       telefonotext.text=telefono

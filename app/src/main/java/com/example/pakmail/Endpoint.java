@@ -11,6 +11,8 @@ public class Endpoint {
         public static String URL_MENSAJERO = URL_WEB_SERVICE + "mensajeros_crud.php";
         public static String URL_GUIA = URL_WEB_SERVICE + "solicitudes_crud.php";
 
+    public static String URL_ESTATUS = URL_WEB_SERVICE + "estatus_envio.php";
+
     public static String UPDATE_USER = URL_WEB_SERVICE + "clientes.php";
     public static String CORRIDAS = URL_WEB_SERVICE + "corridas_diaAcciones.php";
     public static String ORDER = URL_WEB_SERVICE + "ordenCompraAcciones.php";

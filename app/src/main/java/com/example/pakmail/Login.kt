@@ -56,9 +56,9 @@ class Login : AppCompatActivity() {
 
 
             buttoningresar.isEnabled = false
-         //   _cellText.setText(preferences.getString("email", ""))
-          //  _passwordText.setText(preferences.getString("password", ""))
-           // login2()
+            _cellText.setText(preferences.getString("email", "")?.replace("\"","") ?: "")
+            _passwordText.setText(preferences.getString("password", "")?.replace("\"","") ?: "")
+            login2()
 
         }
 
@@ -160,7 +160,7 @@ class Login : AppCompatActivity() {
                             )
                             editor.putString(
                                 "password",
-                                (datos as JsonObject).get("password").toString()
+                                _passwordText.text.toString()
                             )
                             if (checkBox.isChecked) {
                                 editor.putString("sesion", "si")

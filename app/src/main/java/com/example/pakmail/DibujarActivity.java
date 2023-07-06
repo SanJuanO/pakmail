@@ -5,8 +5,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -38,10 +40,6 @@ public class DibujarActivity extends AppCompatActivity {
 
         layoutProgresoImagen = (LinearLayout) findViewById(R.id.layout_progreso_firma);
         signatureView = (SignatureView) findViewById(R.id.firma);
-
-
-
-
     }
     public void ok(View view) {
         if(verificarPermisos()) {
@@ -53,7 +51,7 @@ public class DibujarActivity extends AppCompatActivity {
 
                     FileOutputStream out = null;
                     try {
-                        SimpleDateFormat hor = new SimpleDateFormat("hh:mm:ss");
+                        SimpleDateFormat hor = new SimpleDateFormat("hhmmss");
 
                         String hora = hor.format(new Date());
                         ruta = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "dibujo"+hora;

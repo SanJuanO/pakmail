@@ -16,9 +16,14 @@ import com.android.volley.*
 import com.android.volley.toolbox.Volley
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
+import com.example.pakmail.services.Utils
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.google.gson.JsonObject
+import com.google.gson.JsonParser
 import kotlinx.android.synthetic.main.activity_detalle.*
 import kotlinx.android.synthetic.main.activity_evidencia.*
 import kotlinx.android.synthetic.main.activity_login.*
+import org.json.JSONException
 import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 import java.io.IOException
@@ -26,7 +31,7 @@ import java.util.HashMap
 
 
 class Evidencia : AppCompatActivity() {
-   var id_ticket= ""
+   var id_ticket = ""
     private val IR_A_DIBUJAR = 632
     private var rutaImgDibujo: String? = null
     private  var rutaFoto: String? = null
@@ -34,6 +39,7 @@ class Evidencia : AppCompatActivity() {
     var Imgfirma: String? = ""
     var nombre= ""
     var telefono= ""
+    var utils: Utils = Utils()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,7 +47,7 @@ class Evidencia : AppCompatActivity() {
 
 
         id_ticket = intent.getStringExtra("id_ticket")
-        id_estado= intent.getStringExtra("id_estado")
+        id_estado= intent.getStringExtra("estatus")
         nombre= intent.getStringExtra("nom")
         telefono= intent.getStringExtra("tel")
 nombret.setText(nombre)
@@ -71,130 +77,59 @@ nombret.setText(nombre)
         modificarevidencia.setOnClickListener(View.OnClickListener {
 
 
-            cambiarestatus()
+            modificar()
 
 
         })
 
     }
 
-    fun cambiarestatus(){
 
-        val preferencias = this.getSharedPreferences(
-                "variables",
-                Context.MODE_PRIVATE
-        )
-        var id=preferencias.getString("id", "").toString()
-
-
-        val progressDialog = ProgressDialog(this,
-
-
-
-            R.style.Theme_AppCompat_Light_Dialog)
-        progressDialog.isIndeterminate = true
-        progressDialog.setMessage("Cargando datos...")
-        progressDialog.show()
-
-
-        var  URL_API = "https://servicios.pakmailmetepec.com/tickets.php"
-        val requestQueue: RequestQueue = Volley.newRequestQueue(this)
-        val dat = HashMap<String, String>()
-        dat.put("accion", "updateEstado")
-        dat.put("id", id_ticket)
-        dat.put("id_estado", id_estado)
-        dat.put("id_user", id)
-
-
-        val request = JsonCustomRequestPHP(
-            Request.Method.POST,
-            URL_API,
-            dat,
-            Response.Listener { response ->
-
-
+    fun modificar() {
+            val progressDialog = ProgressDialog(
+                this,
+                R.style.Theme_AppCompat_Light_Dialog
+            )
+            progressDialog.isIndeterminate = true
+            progressDialog.setMessage("Cargando datos...")
+            progressDialog.show()
+            val json = JSONObject()
+            try {
+                json.put("accion", "actualizar")
+                json.put("estatus", id_estado)
+                json.put("id", id_ticket)
+                json.put("recibe_firma", Imgfirma.toString())
+                json.put("recibe_nombre", nombre)
+                json.put("recibe_telefono", telefono)
+                utils.WsRequest(
+                    applicationContext,
+                    Request.Method.POST,
+                    Endpoint.URL_GUIA,
+                    json,
+                    null,
+                    null,
+                    object : Utils.ServerVolleyCallback {
+                        override fun onSucces(result: String?) {
+                            progressDialog?.dismiss()
+                            val objectMapper = ObjectMapper()
+                            val resp: JsonObject = JsonParser().parse(result).asJsonObject
+                            val success = (resp as JsonObject).get("success").toString()
+                            if (success == "true") {
+                                _ShowAlert2("Estatus actualizado", "Bien echo")
+                            } else {
+                                _ShowAlert("Error", (resp as JsonObject).get("message").toString())
+                            }
+                        }
+                        override fun Error(error: VolleyError?) {
+                            progressDialog?.dismiss()
+                        }
+                    })
+            } catch (e: JSONException) {
                 progressDialog?.dismiss()
-                val result = response["resultado"] as Int
-                if (result == 1) {
-
-                    actualizar()
-                }else{
-                    _ShowAlert("Error", "intente mas tarde")
-
-                }
-
-
-
-            },
-            Response.ErrorListener { error ->
-                _ShowAlert("Error", "intente mas tarde")
-
-            })
-        val MY_SOCKET_TIMEOUT_MS = 15000
-        val maxRetries = 2
-        request.retryPolicy = DefaultRetryPolicy(
-            MY_SOCKET_TIMEOUT_MS,
-            maxRetries,
-            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
-        )
-        requestQueue.add(request)
-
+                e.printStackTrace()
+            }
     }
-fun actualizar(){
-    nombre=nombret.text.toString()
-    telefono=telefonot.text.toString()
 
-
-        val progressDialog = ProgressDialog(this,
-
-
-                R.style.Theme_AppCompat_Light_Dialog)
-        progressDialog.isIndeterminate = true
-        progressDialog.setMessage("Cargando datos...")
-        progressDialog.show()
-
-
-        var  URL_API = "https://servicios.pakmailmetepec.com/tickets.php"
-        val requestQueue: RequestQueue = Volley.newRequestQueue(this)
-        val dat = HashMap<String, String>()
-        dat.put("accion", "updateEvidencias")
-        dat.put("id", id_ticket)
-        dat.put("recibe_firma", Imgfirma.toString())
-    dat.put("recibe_nombre", nombre)
-    dat.put("recibe_telefono", telefono)
-
-
-        val request = JsonCustomRequestPHP(
-                Request.Method.POST,
-                URL_API,
-                dat,
-                Response.Listener { response ->
-
-
-                    progressDialog?.dismiss()
-                    val result = response["resultado"] as Int
-                    if (result == 1) {
-                        _ShowAlert("Evidencia agregada", "Bien echosis")
-
-                    }
-                    else {
-                        _ShowAlert("Error", "intente mas tarde")
-                    }
-
-                },
-                Response.ErrorListener { error ->
-                    _ShowAlert("Error", "intente mas tarde")
-
-                })
-        val MY_SOCKET_TIMEOUT_MS = 15000
-        val maxRetries = 2
-        request.retryPolicy = DefaultRetryPolicy(
-                MY_SOCKET_TIMEOUT_MS,
-                maxRetries,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
-        )
-        requestQueue.add(request)
-}
 
     private fun _ShowAlert(title: String, mensaje: String) {
         val alertDialog = AlertDialog.Builder(this).create()

@@ -317,6 +317,7 @@ android:textColor="@color/ared"
                         android:orientation="vertical"
                         android:layout_below="@id/ll7"
                         android:weightSum="4"
+                        android:visibility="invisible"
                         >
 
                         <TextView
@@ -353,6 +354,7 @@ android:textColor="@color/ared"
                         android:orientation="vertical"
                         android:layout_below="@id/ll8"
                         android:weightSum="4"
+                        android:visibility="invisible"
                         >
                         <TextView
                             android:layout_width="wrap_content"
@@ -393,7 +395,7 @@ android:textColor="@color/ared"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:id="@+id/l10"
-                    android:layout_below="@id/ll99"
+                    android:layout_below="@id/ll9"
                     android:weightSum="4"
                     >
                     <TextView
@@ -771,7 +773,6 @@ android:textAlignment="center"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/spinerd"
-                    android:onClick="modificar"
                     android:layout_marginTop="10dp"
                     style="@style/btnred"
                     android:layout_marginRight="20dp"
