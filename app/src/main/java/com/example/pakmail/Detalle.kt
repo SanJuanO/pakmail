@@ -102,18 +102,10 @@ class Detalle : AppCompatActivity() {
                             val tnombred = guias.getString("remitente")
                             val tdirecciond = guias.getString("remitente_direccion")
                             val ttipo_rda = guias.getString("tipo_entrega")
+                            val peso_total = guias.getString("peso_total")
+
                             estatus = guias.getString("estatus")
                             val persona_entrega = guias.getString("persona_entrega")
-                          //  val tcomentarios = persona_entrega_data.getString("comentarios")
-                        /*    val dimensiones = guias.getJSONArray("misma_dimension")
-                            id_estado = tid_estado
-                            var tpeso = 0
-                            var tpiezas = dimensiones.length()
-                            val arr = IntArray(dimensiones.length())
-                            for (i in 0 until dimensiones.length()) {
-                                val producto = dimensiones.getJSONObject(i)
-                                tpeso = tpeso + producto.getString("dp").toInt()
-                            }*/
                             nombrer.text = tnombrer
                             telefonor.text = ttelefonor
                             direccionr.text = tdireccionr
@@ -122,7 +114,7 @@ class Detalle : AppCompatActivity() {
                             direcciond.text = tdirecciond
                             piezas.text = cantidad
                             tipo.text = ttipo_paquete
-                         //   peso.text = tpeso.toString()
+                            peso.text = peso_total.toString() + " kg."
                           //  piezas.text = tpiezas.toString()
                             descripcion.text = tdescripcion_paquete.toString()
                           //  nombrealterno.text = tnombre_alterno_recibe

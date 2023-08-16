@@ -52,7 +52,6 @@ android:textColor="@color/ared"
                         android:layout_marginStart="10dp"
                         android:inputType="number"
                         android:layout_marginTop="100dp"
-                        android:text="5791983237"
                         android:layout_marginEnd="10dp"
                         android:textSize="18dp" />
                     <View

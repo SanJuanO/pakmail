@@ -67,7 +67,7 @@
                     android:layout_width="18dp"
                     android:layout_height="18dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/usuario"
+                    android:src="@android:drawable/ic_dialog_email"
                     app:tint="@color/white" />
 
                 <EditText
@@ -76,7 +76,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
                     android:background="#00000000"
-                    android:hint="Usuario"
+                    android:hint="Correo"
                     android:inputType="text"
                     android:letterSpacing="0.1"
                     android:textColor="@color/white"

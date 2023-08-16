@@ -27,10 +27,10 @@ class Perfil : Fragment() {
 
         var role= "Mensajero"
 
-        var nombre = preferencias.getString("nombre", "").toString()
+        var nombre = preferencias.getString("nombre", "").toString().replace("\"", "")
 
-        var  telefono= preferencias.getString("telefono", "").toString()
-        var email= preferencias.getString("email", "").toString()
+        var  telefono= preferencias.getString("telefono", "").toString().replace("\"", "")
+        var email= preferencias.getString("email", "").toString().replace("\"", "")
 
 
         //val decodedString1 = Base64.decode(imag, Base64.DEFAULT)
